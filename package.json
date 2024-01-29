@@ -1,0 +1,42 @@
+{
+  "name": "desafio-planne",
+  "private": true,
+  "engines": {
+    "npm": ">=10.0.0",
+    "node": ">=20.0.0"
+  },
+  "version": "0.1.0",
+  "description": "",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon",
+    "dev:stdin": "nodemon -I",
+    "lint": "eslint \"src/**/*.ts\" --fix",
+    "start": "ts-node ./src/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:ci": "npm run test -- --collect-coverage"
+  },
+  "author": "Thassio Victor <tvmcarvalho@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.10",
+    "@typescript-eslint/eslint-plugin": "^6.20.0",
+    "@typescript-eslint/parser": "^6.20.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "prettier": "^3.2.4",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "pino": "^8.17.2",
+    "zod": "^3.22.4"
+  }
+}
