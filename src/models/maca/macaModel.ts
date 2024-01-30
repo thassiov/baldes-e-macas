@@ -39,6 +39,10 @@ Maca.init(
       allowNull: false,
     },
     expiracao: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    expiracaoDate: {
       type: DataTypes.DATE,
       allowNull: false,
     },

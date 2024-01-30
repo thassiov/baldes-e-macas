@@ -1,6 +1,7 @@
-import { Sequelize } from 'sequelize';
+import { ModelStatic, Op, Sequelize, Transaction } from 'sequelize';
 
-import { ICreateMacaDto } from '../../models/maca';
+import { ICreateMacaDto, Maca } from '../../models/maca';
+import { RepositoryError } from '../../utils/errors';
 
 type RemoveResult = {
   removed: number;
@@ -11,29 +12,139 @@ type MoveResult = {
 };
 
 class MacaRepository {
-  constructor(private readonly db: Sequelize) {}
+  db: ModelStatic<Maca>;
 
-  async create(_: ICreateMacaDto): Promise<number> {
-    this.db;
-    return 1;
+  constructor(private readonly sequelize: Sequelize) {
+    this.db = this.sequelize.model('maca');
   }
 
-  async remove(_: number): Promise<RemoveResult> {
-    this.db;
-    return { removed: 1 };
+  async create(macaDto: ICreateMacaDto): Promise<number> {
+    const transaction = await this.getTransaction();
+    try {
+      const result = await this.db.create(macaDto, { transaction });
+      await transaction.commit();
+      return result.get('id') as number;
+    } catch (error) {
+      await transaction.rollback();
+      throw new RepositoryError('Erro ao criar nova maca no banco de dados', {
+        cause: error as Error,
+        details: {
+          input: macaDto,
+        },
+      });
+    }
   }
 
-  async exists(_: number): Promise<boolean> {
-    this.db;
-    return true;
+  async remove(macaId: number): Promise<RemoveResult> {
+    const transaction = await this.getTransaction();
+    try {
+      const result = await this.db.destroy({
+        transaction,
+        where: {
+          id: {
+            [Op.eq]: macaId,
+          },
+        },
+      });
+
+      await transaction.commit();
+
+      return { removed: result };
+    } catch (error) {
+      await transaction.rollback();
+      throw new RepositoryError('Error ao remover maca do banco de dados', {
+        cause: error as Error,
+        details: {
+          input: macaId,
+        },
+      });
+    }
   }
 
-  async moveToBalde(_b: number, _m: number): Promise<MoveResult> {
-    return { moved: 1 };
+  async exists(macaId: number): Promise<boolean> {
+    try {
+      const result = await this.db.findOne<Maca>({
+        where: { id: { [Op.eq]: macaId } },
+      });
+
+      if (result === null) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      throw new RepositoryError('Error ao remover maca dobanco de dados', {
+        cause: error as Error,
+        details: {
+          input: macaId,
+        },
+      });
+    }
   }
 
-  async moveFromBalde(_b: number, _m: number): Promise<MoveResult> {
-    return { moved: 1 };
+  async moveToBalde(macaId: number, baldeId: number): Promise<MoveResult> {
+    const transaction = await this.getTransaction();
+    try {
+      const maca = await this.db.update<Maca>(
+        { baldeId },
+        {
+          where: {
+            id: {
+              [Op.eq]: macaId,
+            },
+          },
+        }
+      );
+      await transaction.commit();
+
+      return { moved: maca[0] };
+    } catch (error) {
+      await transaction.rollback();
+      throw new RepositoryError(
+        'Erro ao registrar relacao entre maca e balde',
+        {
+          cause: error as Error,
+          details: {
+            input: { macaId, baldeId },
+          },
+        }
+      );
+    }
+  }
+
+  async moveFromBalde(macaId: number, baldeId: number): Promise<MoveResult> {
+    const transaction = await this.getTransaction();
+    try {
+      const maca = await this.db.update<Maca>(
+        { baldeId: null },
+        {
+          where: {
+            id: {
+              [Op.eq]: macaId,
+            },
+            baldeId: {
+              [Op.eq]: baldeId,
+            },
+          },
+        }
+      );
+      await transaction.commit();
+
+      return { moved: maca[0] };
+    } catch (error) {
+      await transaction.rollback();
+      throw new RepositoryError('Erro ao desfazer relacao entre maca e balde', {
+        cause: error as Error,
+        details: {
+          input: { macaId, baldeId },
+        },
+      });
+    }
+  }
+
+  private async getTransaction(): Promise<Transaction> {
+    const t = await this.sequelize.transaction();
+    return t;
   }
 }
 

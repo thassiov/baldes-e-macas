@@ -14,7 +14,10 @@ describe('maca service', () => {
   const mockRepo = {
     create: jest.fn(),
     remove: jest.fn(),
-  } as MacaRepository;
+    exists: jest.fn(),
+    moveToBalde: jest.fn(),
+    moveFromBalde: jest.fn(),
+  };
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -30,7 +33,7 @@ describe('maca service', () => {
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce('macaid');
 
-    const macaService = new MacaService(mockRepo);
+    const macaService = new MacaService(mockRepo as any as MacaRepository);
 
     const result = await macaService.create(mockMaca);
     expect(mockRepo.create).toHaveBeenCalledWith({
@@ -54,7 +57,7 @@ describe('maca service', () => {
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
-    const macaService = new MacaService(mockRepo);
+    const macaService = new MacaService(mockRepo as any as MacaRepository);
 
     const result = await macaService.create(mockMaca);
     expect(mockRepo.create).toHaveBeenCalledWith({
@@ -73,7 +76,7 @@ describe('maca service', () => {
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
-    const macaService = new MacaService(mockRepo);
+    const macaService = new MacaService(mockRepo as any as MacaRepository);
 
     expect(() => macaService.create(mockMaca)).rejects.toThrow(
       'A expiracao deve ser maior que 0 segundos'
@@ -90,7 +93,7 @@ describe('maca service', () => {
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
-    const macaService = new MacaService(mockRepo);
+    const macaService = new MacaService(mockRepo as any as MacaRepository);
 
     expect(() => macaService.create(mockMaca)).rejects.toThrow(
       'A expiracao deve ser maior que 0 segundos'
@@ -102,7 +105,7 @@ describe('maca service', () => {
 
     (mockRepo.remove as jest.Mock).mockResolvedValueOnce({ removed: 1 });
 
-    const macaService = new MacaService(mockRepo);
+    const macaService = new MacaService(mockRepo as any as MacaRepository);
 
     const result = await macaService.remove(mockMacaId);
 
@@ -117,7 +120,7 @@ describe('maca service', () => {
       new Error('A maca nao existe')
     );
 
-    const macaService = new MacaService(mockRepo);
+    const macaService = new MacaService(mockRepo as any as MacaRepository);
 
     expect(() => macaService.remove(mockMacaId)).rejects.toThrow(
       'A maca nao existe'
