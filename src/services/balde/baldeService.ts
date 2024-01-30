@@ -18,7 +18,13 @@ class BaldeService {
 
   async remove(baldeId: number): Promise<boolean> {
     try {
-      return this.repo.remove(baldeId);
+      const { removed } = await this.repo.remove(baldeId);
+
+      if (removed === 0) {
+        return false;
+      }
+
+      return true;
     } catch (error) {
       throw new ServiceError('Erro ao remover balde', {
         cause: error as Error,

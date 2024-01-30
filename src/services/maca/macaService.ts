@@ -28,9 +28,15 @@ class MacaService {
 
   async remove(macaId: number): Promise<boolean> {
     try {
-      return this.repo.remove(macaId);
+      const { removed } = await this.repo.remove(macaId);
+
+      if (removed === 0) {
+        return false;
+      }
+
+      return true;
     } catch (error) {
-      throw new ServiceError('Erro ao remove maca', {
+      throw new ServiceError('Erro ao remover maca', {
         cause: error as Error,
         details: { input: macaId },
       });

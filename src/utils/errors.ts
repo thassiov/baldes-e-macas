@@ -18,6 +18,10 @@ export class CustomError extends Error {
 
       if (opts.cause) {
         this.cause = opts.cause;
+        // concatena as mensagens de erro pra melhor visibilidade
+        if (opts.cause.message) {
+          this.message += `: ${opts.cause.message}`;
+        }
       }
     }
   }

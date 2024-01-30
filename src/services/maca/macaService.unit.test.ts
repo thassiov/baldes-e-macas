@@ -63,6 +63,40 @@ describe('maca service', () => {
     expect(result).toEqual(1);
   });
 
+  it('falha ao tentar criar uma nova maca com expiracao 0 segundos', async () => {
+    const mockMaca = {
+      baldeId: 1,
+      preco: 1.5,
+      nome: 'maca',
+      expiracao: '0s',
+    } as CreateMacaDto;
+
+    (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
+
+    const macaService = new MacaService(mockRepo);
+
+    expect(() => macaService.create(mockMaca)).rejects.toThrow(
+      'A expiracao deve ser maior que 0 segundos'
+    );
+  });
+
+  it('falha ao tentar criar uma nova maca com expiracao menor que 0 segundos', async () => {
+    const mockMaca = {
+      baldeId: 1,
+      preco: 1.5,
+      nome: 'maca',
+      expiracao: '-4s',
+    } as CreateMacaDto;
+
+    (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
+
+    const macaService = new MacaService(mockRepo);
+
+    expect(() => macaService.create(mockMaca)).rejects.toThrow(
+      'A expiracao deve ser maior que 0 segundos'
+    );
+  });
+
   it('remove uma maca existente', async () => {
     const mockMacaId = 1;
 
