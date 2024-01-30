@@ -1,11 +1,11 @@
-import { CreateMacaDto } from '../../models/maca';
+import { ICreateMacaDto } from '../../models/maca';
 
 type RemoveResult = {
   removed: number;
 };
 
 class MacaRepository {
-  async create(_: CreateMacaDto): Promise<number> {
+  async create(_: ICreateMacaDto): Promise<number> {
     return 1;
   }
 

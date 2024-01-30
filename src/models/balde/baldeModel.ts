@@ -1,4 +1,7 @@
+import { DataTypes, Model } from 'sequelize';
 import { z } from 'zod';
+
+import { sequelize } from '../db';
 
 const baldeSchema = z.object({
   id: z.number().min(1),
@@ -11,12 +14,31 @@ const createBaldeDtoSchema = z.object({
   nome: z.string().optional(),
 });
 
-type Balde = z.infer<typeof baldeSchema>;
-type CreateBaldeDto = z.infer<typeof createBaldeDtoSchema>;
+type IBalde = z.infer<typeof baldeSchema>;
+type ICreateBaldeDto = z.infer<typeof createBaldeDtoSchema>;
 
-export {
-  baldeSchema,
-  createBaldeDtoSchema,
-  Balde,
-  CreateBaldeDto,
-};
+class Balde extends Model {}
+Balde.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    nome: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    capacidade: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: 'balde',
+    paranoid: true,
+  }
+);
+
+export { baldeSchema, createBaldeDtoSchema, IBalde, ICreateBaldeDto, Balde };

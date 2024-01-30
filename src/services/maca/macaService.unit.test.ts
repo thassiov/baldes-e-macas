@@ -1,4 +1,4 @@
-import { CreateMacaDto } from '../../models/maca';
+import { ICreateMacaDto } from '../../models/maca';
 import { MacaRepository } from '../../repos/maca';
 import { MacaService } from './macaService';
 
@@ -26,7 +26,7 @@ describe('maca service', () => {
       preco: 1.5,
       nome: 'maca',
       expiracao: '10s',
-    } as CreateMacaDto;
+    } as ICreateMacaDto;
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce('macaid');
 
@@ -50,7 +50,7 @@ describe('maca service', () => {
       preco: 1.5,
       nome: 'maca',
       expiracao: '10s',
-    } as CreateMacaDto;
+    } as ICreateMacaDto;
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
@@ -69,7 +69,7 @@ describe('maca service', () => {
       preco: 1.5,
       nome: 'maca',
       expiracao: '0s',
-    } as CreateMacaDto;
+    } as ICreateMacaDto;
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
@@ -86,7 +86,7 @@ describe('maca service', () => {
       preco: 1.5,
       nome: 'maca',
       expiracao: '-4s',
-    } as CreateMacaDto;
+    } as ICreateMacaDto;
 
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 

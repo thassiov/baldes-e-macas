@@ -1,4 +1,7 @@
+import { DataTypes, Model } from 'sequelize';
 import { z } from 'zod';
+
+import { sequelize } from '../db';
 
 const macaSchema = z.object({
   id: z.number().min(1),
@@ -16,7 +19,35 @@ const createMacaDtoSchema = z.object({
   expiracaoDate: z.date().optional(),
 });
 
-type Maca = z.infer<typeof macaSchema>;
-type CreateMacaDto = z.infer<typeof createMacaDtoSchema>;
+type IMaca = z.infer<typeof macaSchema>;
+type ICreateMacaDto = z.infer<typeof createMacaDtoSchema>;
 
-export { macaSchema, createMacaDtoSchema, Maca, CreateMacaDto };
+class Maca extends Model {}
+Maca.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    nome: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    preco: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    expiracao: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: 'maca',
+    paranoid: true,
+  }
+);
+
+export { macaSchema, createMacaDtoSchema, IMaca, ICreateMacaDto, Maca };

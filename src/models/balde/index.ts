@@ -1,13 +1,9 @@
 import {
+  Balde,
+  IBalde,
+  ICreateBaldeDto,
   baldeSchema,
   createBaldeDtoSchema,
-  Balde,
-  CreateBaldeDto,
 } from './baldeModel';
 
-export {
-  baldeSchema,
-  createBaldeDtoSchema,
-  Balde,
-  CreateBaldeDto,
-};
+export { baldeSchema, createBaldeDtoSchema, IBalde, ICreateBaldeDto, Balde };

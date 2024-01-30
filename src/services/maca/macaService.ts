@@ -1,11 +1,11 @@
-import { CreateMacaDto } from '../../models/maca';
+import { ICreateMacaDto } from '../../models/maca';
 import { MacaRepository } from '../../repos/maca';
 import { ServiceError, ValidationError } from '../../utils/errors';
 
 class MacaService {
   constructor(private readonly repo: MacaRepository) {}
 
-  async create(maca: CreateMacaDto): Promise<number> {
+  async create(maca: ICreateMacaDto): Promise<number> {
     try {
       const expiracaoSegundos = parseInt(maca.expiracao.slice(0, -1));
 
