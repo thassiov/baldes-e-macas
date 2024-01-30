@@ -100,13 +100,28 @@ describe('maca service', () => {
   it('remove uma maca existente', async () => {
     const mockMacaId = 1;
 
-    (mockRepo.remove as jest.Mock).mockResolvedValueOnce(true);
+    (mockRepo.remove as jest.Mock).mockResolvedValueOnce({ removed: 1 });
 
     const macaService = new MacaService(mockRepo);
 
     const result = await macaService.remove(mockMacaId);
 
     expect(mockRepo.remove).toHaveBeenCalledWith(1);
-    expect(result).toEqual(true);
+    expect(result.removed).toEqual(1);
+  });
+
+  it('falha ao tentar remover uma maca inexistente', async () => {
+    const mockMacaId = 1;
+
+    (mockRepo.remove as jest.Mock).mockRejectedValueOnce(
+      new Error('A maca nao existe')
+    );
+
+    const macaService = new MacaService(mockRepo);
+
+    expect(() => macaService.remove(mockMacaId)).rejects.toThrow(
+      'A maca nao existe'
+    );
+    expect(mockRepo.remove).toHaveBeenCalledWith(1);
   });
 });
