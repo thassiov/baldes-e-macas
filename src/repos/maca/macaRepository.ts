@@ -52,7 +52,7 @@ class MacaRepository {
       return { removed: result };
     } catch (error) {
       await transaction.rollback();
-      throw new RepositoryError('Error ao remover maca do banco de dados', {
+      throw new RepositoryError('Erro ao remover maca do banco de dados', {
         cause: error as Error,
         details: {
           input: macaId,
