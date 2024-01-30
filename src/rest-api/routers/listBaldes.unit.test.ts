@@ -5,6 +5,11 @@ import { BaldeService } from '../../services/balde';
 import { listBaldesHandlerFactory } from './listBaldes';
 
 describe('REST: balde listBaldesHandler', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+
   const mockBaldeService = {
     create: jest.fn(),
     remove: jest.fn(),

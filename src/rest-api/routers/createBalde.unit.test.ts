@@ -6,6 +6,11 @@ import { BaldeService } from '../../services/balde';
 import { createBaldeHandlerFactory } from './createBalde';
 
 describe('REST: balde createBaldeHandler', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
+  });
+
   const mockBaldeService = {
     create: jest.fn(),
     remove: jest.fn(),
