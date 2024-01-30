@@ -4,7 +4,7 @@ import { configs } from '../utils/configs';
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: configs.DBFILE,
+  storage: configs.DB_FILE,
 });
 
 export { sequelize };
