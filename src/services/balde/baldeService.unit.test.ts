@@ -8,7 +8,7 @@ describe('balde service', () => {
     create: jest.fn(),
     remove: jest.fn(),
     ocupacaoECapacidade: jest.fn(),
-    getAll: jest.fn(),
+    listBaldes: jest.fn(),
     moveToBalde: jest.fn(),
     moveFromBalde: jest.fn(),
   };
@@ -290,6 +290,44 @@ describe('balde service', () => {
       expect(mockRepo.ocupacaoECapacidade).toHaveBeenCalledWith(mockBaldeId);
       expect(mockMacaService.exists).not.toHaveBeenCalled();
       expect(mockMacaService.moveFromBalde).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('listar baldes e seus conteudos', () => {
+    it('retorna uma lista vazia quando nao ha baldes', async () => {
+      (mockRepo.listBaldes as jest.Mock).mockResolvedValueOnce([]);
+
+      const baldeService = new BaldeService(
+        mockRepo as any as BaldeRepository,
+        mockMacaService as any as MacaService
+      );
+
+      const result = await baldeService.listBaldes();
+
+      expect(result).toEqual([]);
+      expect(mockRepo.listBaldes).toHaveBeenCalled();
+    });
+
+    it('retorna uma lista com 1 balde', async () => {
+      const mockBalde = {
+        id: 1,
+        nome: 'A',
+        capacidade: 1,
+        ocupacao: 100,
+        valorTotal: 1,
+      };
+
+      (mockRepo.listBaldes as jest.Mock).mockResolvedValueOnce([mockBalde]);
+
+      const baldeService = new BaldeService(
+        mockRepo as any as BaldeRepository,
+        mockMacaService as any as MacaService
+      );
+
+      const result = await baldeService.listBaldes();
+
+      expect(result).toEqual([mockBalde]);
+      expect(mockRepo.listBaldes).toHaveBeenCalled();
     });
   });
 });

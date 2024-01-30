@@ -1,7 +1,11 @@
 import { ICreateBaldeDto } from '../../models/balde';
 import { BaldeRepository } from '../../repos/balde';
 import { ServiceError } from '../../utils/errors';
-import { MoveResult, RemoveResult } from '../../utils/types';
+import {
+  BaldeListResultItem,
+  MoveResult,
+  RemoveResult,
+} from '../../utils/types';
 import { MacaService } from '../maca';
 
 class BaldeService {
@@ -118,6 +122,16 @@ class BaldeService {
       throw new ServiceError('Erro ao remover maca do balde', {
         cause: error as Error,
         details: { input: { macaId, baldeId } },
+      });
+    }
+  }
+
+  async listBaldes(): Promise<BaldeListResultItem[]> {
+    try {
+      return this.repo.listBaldes();
+    } catch (error) {
+      throw new ServiceError('Erro ao consultar a lista de baldes', {
+        cause: error as Error,
       });
     }
   }

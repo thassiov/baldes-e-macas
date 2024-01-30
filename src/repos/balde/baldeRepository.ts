@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 
 import { ICreateBaldeDto } from '../../models/balde';
+import { BaldeListResultItem } from '../../utils/types';
 
 type RemoveResult = {
   removed: number;
@@ -27,7 +28,7 @@ class BaldeRepository {
     return { ocupacao: 1, capacidade: 1 };
   }
 
-  async getAll(): Promise<[]> {
+  async listBaldes(): Promise<BaldeListResultItem[]> {
     this.db;
     return [];
   }
