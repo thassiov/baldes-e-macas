@@ -8,10 +8,15 @@ export type RemoveResult = {
   message?: string;
 };
 
+export type CreateResult = {
+  id: number;
+  expiracao: Date;
+};
+
 class MacaService {
   constructor(private readonly repo: MacaRepository) {}
 
-  async create(maca: ICreateMacaDto): Promise<number> {
+  async create(maca: ICreateMacaDto): Promise<CreateResult> {
     try {
       const expiracaoSegundos = parseInt(maca.expiracao.slice(0, -1));
 
@@ -23,7 +28,11 @@ class MacaService {
 
       maca.expiracaoDate = new Date(Date.now() + expiracaoSegundos * 1000);
 
-      return this.repo.create(maca);
+      const id = await this.repo.create(maca);
+
+      const returnObject = { id, expiracao: maca.expiracaoDate };
+
+      return returnObject;
     } catch (error) {
       throw new ServiceError('Erro ao criar nova maca', {
         cause: error as Error,
@@ -78,6 +87,16 @@ class MacaService {
       throw new ServiceError('Erro ao remover a maca do balde', {
         cause: error as Error,
         details: { input: { macaId, baldeId } },
+      });
+    }
+  }
+
+  async getMacasIdAndExpiration(): Promise<{ id: number; expiracao: Date }[]> {
+    try {
+      return this.repo.getMacasIdAndExpiration();
+    } catch (error) {
+      throw new ServiceError('Erro ao listar todas as macas', {
+        cause: error as Error,
       });
     }
   }

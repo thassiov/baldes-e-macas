@@ -31,30 +31,6 @@ describe('maca service', () => {
       expiracao: '10s',
     } as ICreateMacaDto;
 
-    (mockRepo.create as jest.Mock).mockResolvedValueOnce('macaid');
-
-    const macaService = new MacaService(mockRepo as any as MacaRepository);
-
-    const result = await macaService.create(mockMaca);
-    expect(mockRepo.create).toHaveBeenCalledWith({
-      ...mockMaca,
-    });
-
-    const expiracaoDate = (mockRepo.create as jest.Mock).mock.calls[0][0]
-      .expiracaoDate;
-    const seg = parseInt(mockMaca.expiracao.slice(0, -1));
-    expect(isDateXSecondsFromNow(expiracaoDate, seg)).toEqual(true);
-    expect(result).toEqual('macaid');
-  });
-
-  it('cria uma nova maca em um balde', async () => {
-    const mockMaca = {
-      baldeId: 1,
-      preco: 1.5,
-      nome: 'maca',
-      expiracao: '10s',
-    } as ICreateMacaDto;
-
     (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
     const macaService = new MacaService(mockRepo as any as MacaRepository);
@@ -63,7 +39,11 @@ describe('maca service', () => {
     expect(mockRepo.create).toHaveBeenCalledWith({
       ...mockMaca,
     });
-    expect(result).toEqual(1);
+
+    expect(result.id).toEqual(1);
+    expect(result.expiracao).toBeDefined();
+    const seg = parseInt(mockMaca.expiracao.slice(0, -1));
+    expect(isDateXSecondsFromNow(result.expiracao, seg)).toEqual(true);
   });
 
   it('falha ao tentar criar uma nova maca com expiracao 0 segundos', async () => {
@@ -73,8 +53,6 @@ describe('maca service', () => {
       nome: 'maca',
       expiracao: '0s',
     } as ICreateMacaDto;
-
-    (mockRepo.create as jest.Mock).mockResolvedValueOnce(1);
 
     const macaService = new MacaService(mockRepo as any as MacaRepository);
 

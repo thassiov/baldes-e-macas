@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { ICreateMacaDto } from '../../models';
 import { MacaService } from '../../services/maca';
+import { MacaEvictionService } from '../../services/maca-eviction';
 import { createMacaHandlerFactory } from './createMaca';
 
 describe('REST: maca createMacaHandler', () => {
@@ -16,6 +17,11 @@ describe('REST: maca createMacaHandler', () => {
     remove: jest.fn(),
   };
 
+  const mockMonitoramentoService = {
+    adicionarMacaAlistadeMonitoramentoDeExpiracao: jest.fn(),
+    removerMacaAlistadeMonitoramentoDeExpiracao: jest.fn(),
+  };
+
   it('cria uma nova maca', async () => {
     const mockMaca = {
       preco: 1.5,
@@ -23,14 +29,18 @@ describe('REST: maca createMacaHandler', () => {
       expiracao: '4s',
     } as ICreateMacaDto;
 
-    (mockMacaService.create as jest.Mock).mockResolvedValueOnce(1);
+    (mockMacaService.create as jest.Mock).mockResolvedValueOnce({
+      id: 1,
+      expiracao: new Date(),
+    });
 
     const mockReq = getMockReq({
       body: mockMaca,
     });
     const mockRes = getMockRes().res;
     const createMacaHandler = createMacaHandlerFactory(
-      mockMacaService as any as MacaService
+      mockMacaService as any as MacaService,
+      mockMonitoramentoService as any as MacaEvictionService
     );
 
     await createMacaHandler(mockReq, mockRes);
@@ -51,7 +61,8 @@ describe('REST: maca createMacaHandler', () => {
     });
     const mockRes = getMockRes().res;
     const createMacaHandler = createMacaHandlerFactory(
-      mockMacaService as any as MacaService
+      mockMacaService as any as MacaService,
+      mockMonitoramentoService as any as MacaEvictionService
     );
 
     await createMacaHandler(mockReq, mockRes);
@@ -74,7 +85,8 @@ describe('REST: maca createMacaHandler', () => {
     });
     const mockRes = getMockRes().res;
     const createMacaHandler = createMacaHandlerFactory(
-      mockMacaService as any as MacaService
+      mockMacaService as any as MacaService,
+      mockMonitoramentoService as any as MacaEvictionService
     );
 
     await createMacaHandler(mockReq, mockRes);
@@ -101,7 +113,8 @@ describe('REST: maca createMacaHandler', () => {
     });
     const mockRes = getMockRes().res;
     const createMacaHandler = createMacaHandlerFactory(
-      mockMacaService as any as MacaService
+      mockMacaService as any as MacaService,
+      mockMonitoramentoService as any as MacaEvictionService
     );
 
     await createMacaHandler(mockReq, mockRes);

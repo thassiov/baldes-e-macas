@@ -3,10 +3,14 @@ import { StatusCodes } from 'http-status-codes';
 
 import { createMacaDtoSchema } from '../../models';
 import { MacaService } from '../../services/maca';
+import { MacaEvictionService } from '../../services/maca-eviction';
 import { EndpointHandlerError } from '../../utils/errors';
 import { EndpointHandler } from '../../utils/types';
 
-function createMacaHandlerFactory(macaService: MacaService): EndpointHandler {
+function createMacaHandlerFactory(
+  macaService: MacaService,
+  monitoramento: MacaEvictionService
+): EndpointHandler {
   return async function createMacaHandler(
     req: Request,
     res: Response
@@ -19,9 +23,13 @@ function createMacaHandlerFactory(macaService: MacaService): EndpointHandler {
         return;
       }
 
-      const result = await macaService.create(req.body);
+      const { id, expiracao } = await macaService.create(req.body);
+      monitoramento.adicionarMacaAlistadeMonitoramentoDeExpiracao({
+        id,
+        expiracao,
+      });
 
-      res.status(StatusCodes.CREATED).json({ id: result });
+      res.status(StatusCodes.CREATED).json({ id });
     } catch (error) {
       if ((error as Error).message.includes('0 segundos')) {
         res.status(StatusCodes.BAD_REQUEST).json({

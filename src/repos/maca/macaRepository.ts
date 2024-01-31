@@ -142,6 +142,23 @@ class MacaRepository {
     }
   }
 
+  async getMacasIdAndExpiration(): Promise<{ id: number; expiracao: Date }[]> {
+    try {
+      const macas = await this.db.findAll();
+
+      const macasExpiracao = macas.map((maca) => ({
+        id: maca.get('id') as number,
+        expiracao: maca.get('expiracaoDate') as Date,
+      })) as { id: number; expiracao: Date }[];
+
+      return macasExpiracao;
+    } catch (error) {
+      throw new RepositoryError('Erro ao listar macas no banco de dados', {
+        cause: error as Error,
+      });
+    }
+  }
+
   private async getTransaction(): Promise<Transaction> {
     const t = await this.sequelize.transaction();
     return t;

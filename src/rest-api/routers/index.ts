@@ -10,11 +10,10 @@ import { moveToBaldeHandlerFactory } from './moveToBalde';
 import { removeBaldeHandlerFactory } from './removeBalde';
 import { removeMacaHandlerFactory } from './removeMaca';
 
-const router = express.Router();
-
-router.use('/v1');
-
 function setRouter(services: Services): express.Router {
+  const router = express.Router();
+
+  router.use('/v1');
   router.post('/baldes', createBaldeHandlerFactory(services.balde));
   router.get('/baldes', listBaldesHandlerFactory(services.balde));
   router.delete('/baldes/:id', removeBaldeHandlerFactory(services.balde));
@@ -26,8 +25,14 @@ function setRouter(services: Services): express.Router {
     '/baldes/:baldeId/remover/:macaId',
     moveFromBaldeHandlerFactory(services.balde)
   );
-  router.post('/maca', createMacaHandlerFactory(services.maca));
-  router.delete('/maca:id', removeMacaHandlerFactory(services.maca));
+  router.post(
+    '/maca',
+    createMacaHandlerFactory(services.maca, services.monitoramento)
+  );
+  router.delete(
+    '/maca:id',
+    removeMacaHandlerFactory(services.maca, services.monitoramento)
+  );
 
   router.use(errorHandler);
 

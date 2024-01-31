@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { MacaService } from '../services/maca';
+
 import { BaldeService } from '../services/balde';
+import { MacaService } from '../services/maca';
+import { MacaEvictionService } from '../services/maca-eviction';
 
 export type RemoveResult = {
   removed: number;
@@ -25,4 +27,5 @@ export type EndpointHandler = (req: Request, res: Response) => Promise<void>;
 export type Services = {
   maca: MacaService;
   balde: BaldeService;
+  monitoramento: MacaEvictionService;
 };
