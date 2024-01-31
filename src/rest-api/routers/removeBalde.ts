@@ -22,6 +22,7 @@ function removeBaldeHandlerFactory(
         res.status(StatusCodes.BAD_REQUEST).json({
           message: 'O formato do baldeId enviado e invalido',
         });
+        return;
       }
 
       const result = await baldeService.remove(baldeId);
@@ -34,6 +35,7 @@ function removeBaldeHandlerFactory(
 
         if (result.message?.includes('nao esta vazio')) {
           res.status(StatusCodes.BAD_REQUEST).json({ message: result.message });
+          return;
         }
 
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

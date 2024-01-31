@@ -3,6 +3,7 @@ import express from 'express';
 import { Services } from '../../utils/types';
 import { createBaldeHandlerFactory } from './createBalde';
 import { listBaldesHandlerFactory } from './listBaldes';
+import { moveFromBaldeHandlerFactory } from './moveFromBalde';
 import { moveToBaldeHandlerFactory } from './moveToBalde';
 import { removeBaldeHandlerFactory } from './removeBalde';
 
@@ -17,6 +18,10 @@ function setRouter(services: Services): express.Router {
   router.patch(
     '/baldes/:baldeId/adicionar/:macaId',
     moveToBaldeHandlerFactory(services.balde)
+  );
+  router.patch(
+    '/baldes/:baldeId/remover/:macaId',
+    moveFromBaldeHandlerFactory(services.balde)
   );
 
   return router;
