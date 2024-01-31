@@ -148,7 +148,13 @@ describe('Balde repo', () => {
             nome: 'A',
             capacidade: 1,
           },
-          get: () => 1,
+          get: (arg: string) => {
+            if (arg === 'nome') {
+              return 'A';
+            }
+
+            return 1;
+          },
         } as Balde,
       ]);
 
