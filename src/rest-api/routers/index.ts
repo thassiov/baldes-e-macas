@@ -13,7 +13,6 @@ import { removeMacaHandlerFactory } from './removeMaca';
 function setRouter(services: Services): express.Router {
   const router = express.Router();
 
-  router.use('/v1');
   router.post('/baldes', createBaldeHandlerFactory(services.balde));
   router.get('/baldes', listBaldesHandlerFactory(services.balde));
   router.delete('/baldes/:id', removeBaldeHandlerFactory(services.balde));
@@ -26,11 +25,11 @@ function setRouter(services: Services): express.Router {
     moveFromBaldeHandlerFactory(services.balde)
   );
   router.post(
-    '/maca',
+    '/macas',
     createMacaHandlerFactory(services.maca, services.monitoramento)
   );
   router.delete(
-    '/maca:id',
+    '/macas:id',
     removeMacaHandlerFactory(services.maca, services.monitoramento)
   );
 

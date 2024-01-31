@@ -33,6 +33,7 @@ const macaEvictionService = new MacaEvictionService(macaService);
     startApi(services);
   } catch (error) {
     logger.error((error as Error).message);
+    logger.error((error as Error).stack);
     logger.error('Erro na execucao da aplicacao. Saindo...');
     process.exit(1);
   }

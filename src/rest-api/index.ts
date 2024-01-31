@@ -14,7 +14,7 @@ api.use(pinoHttp());
 
 function startApi(services: Services) {
   const router = setRouter(services);
-  api.use(router);
+  api.use('/api/v1', router);
 
   api.listen(configs.API_PORT, () =>
     logger.info(

@@ -10,7 +10,7 @@ const baldeSchema = z.object({
 });
 
 const createBaldeDtoSchema = z.object({
-  capacidade: z.number(),
+  capacidade: z.number().min(0),
   nome: z.string().optional(),
 });
 
