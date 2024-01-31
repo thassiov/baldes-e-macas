@@ -113,16 +113,19 @@ class BaldeRepository {
         attributes: [
           [
             this.sequelize.literal(
-              '(SELECT SUM(preco) FROM maca WHERE balde.id = maca.baldeId)'
+              '(SELECT SUM(preco) FROM macas WHERE balde.id = macas.baldeId)'
             ),
             'valorTotal',
           ],
           [
             this.sequelize.literal(
-              '(SELECT COUNT(*) FROM maca WHERE balde.id = maca.baldeId)'
+              '(SELECT COUNT(*) FROM macas WHERE balde.id = macas.baldeId)'
             ),
             'ocupacao',
           ],
+          'id',
+          'capacidade',
+          'nome',
         ],
         include: {
           model: Maca,
@@ -137,16 +140,16 @@ class BaldeRepository {
       const result = baldes.map((balde) => {
         const ocupacao = Math.round(
           ((balde.get('ocupacao') as number) /
-            (balde.dataValues.capacidade as number)) *
+            (balde.get('capacidade') as number)) *
             100
         );
 
         return {
           ocupacao,
-          id: balde.dataValues.id as number,
-          nome: balde.dataValues.nome as string,
-          capacidade: balde.dataValues.capacidade as number,
-          valorTotal: balde.get('total') as number,
+          id: balde.get('id') as number,
+          nome: balde.get('nome') as string,
+          capacidade: balde.get('capacidade') as number,
+          valorTotal: balde.get('valorTotal') as number,
         };
       });
 

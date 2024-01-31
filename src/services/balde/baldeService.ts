@@ -57,28 +57,22 @@ class BaldeService {
 
   async moveToBalde(baldeId: number, macaId: number): Promise<MoveResult> {
     try {
-      console.log('a');
       // cria uma excessao caso o balde nao exista
       const { ocupacao, capacidade } =
         await this.repo.ocupacaoECapacidade(baldeId);
 
-      console.log('b', ocupacao, capacidade);
       if (ocupacao === capacidade) {
         return { moved: 0, message: 'O balde esta cheio' };
       }
 
-      console.log('c');
       const macaExiste = await this.macaService.exists(macaId);
 
-      console.log('d');
       if (!macaExiste) {
         return { moved: 0, message: `A maca nao existe` };
       }
 
-      console.log('e');
       const { moved } = await this.macaService.moveToBalde(macaId, baldeId);
 
-      console.log('f');
       if (moved === 0) {
         return {
           moved: 0,
@@ -86,7 +80,6 @@ class BaldeService {
         };
       }
 
-      console.log('g');
       return { moved };
     } catch (error) {
       if ((error as Error).message === 'O balde nao existe') {

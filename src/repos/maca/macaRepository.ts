@@ -82,18 +82,25 @@ class MacaRepository {
     }
   }
 
-  async moveToBalde(macaId: number, baldeId: number): Promise<MoveResult> {
+  async moveToBalde(macaId: number, baldeID: number): Promise<MoveResult> {
     const transaction = await this.getTransaction();
     try {
       const maca = await this.db.update<Maca>(
-        { baldeId },
+        { baldeId: baldeID },
         {
           where: {
             id: {
               [Op.eq]: macaId,
             },
             baldeId: {
-              [Op.ne]: baldeId,
+              [Op.or]: [
+                {
+                  [Op.eq]: null,
+                },
+                {
+                  [Op.not]: baldeID,
+                },
+              ],
             },
           },
         }
@@ -108,7 +115,7 @@ class MacaRepository {
         {
           cause: error as Error,
           details: {
-            input: { macaId, baldeId },
+            input: { macaId, baldeId: baldeID },
           },
         }
       );
