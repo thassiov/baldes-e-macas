@@ -7,6 +7,7 @@ import { listBaldesHandlerFactory } from './listBaldes';
 import { moveFromBaldeHandlerFactory } from './moveFromBalde';
 import { moveToBaldeHandlerFactory } from './moveToBalde';
 import { removeBaldeHandlerFactory } from './removeBalde';
+import { removeMacaHandlerFactory } from './removeMaca';
 
 const router = express.Router();
 
@@ -25,6 +26,7 @@ function setRouter(services: Services): express.Router {
     moveFromBaldeHandlerFactory(services.balde)
   );
   router.post('/maca', createMacaHandlerFactory(services.maca));
+  router.delete('/maca:id', removeMacaHandlerFactory(services.maca));
 
   return router;
 }
