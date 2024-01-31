@@ -2,6 +2,7 @@ import express from 'express';
 
 import { Services } from '../../utils/types';
 import { createBaldeHandlerFactory } from './createBalde';
+import { createMacaHandlerFactory } from './createMaca';
 import { listBaldesHandlerFactory } from './listBaldes';
 import { moveFromBaldeHandlerFactory } from './moveFromBalde';
 import { moveToBaldeHandlerFactory } from './moveToBalde';
@@ -23,6 +24,7 @@ function setRouter(services: Services): express.Router {
     '/baldes/:baldeId/remover/:macaId',
     moveFromBaldeHandlerFactory(services.balde)
   );
+  router.post('/maca', createMacaHandlerFactory(services.maca));
 
   return router;
 }
