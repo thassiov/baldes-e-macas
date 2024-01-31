@@ -92,6 +92,9 @@ class MacaRepository {
             id: {
               [Op.eq]: macaId,
             },
+            baldeId: {
+              [Op.ne]: baldeId,
+            },
           },
         }
       );

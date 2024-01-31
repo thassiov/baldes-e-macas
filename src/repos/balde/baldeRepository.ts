@@ -72,10 +72,11 @@ class BaldeRepository {
         attributes: [
           [
             this.sequelize.literal(
-              '(SELECT COUNT(*) FROM maca WHERE balde.id = maca.baldeId)'
+              '(SELECT COUNT(*) FROM macas WHERE balde.id = macas.baldeId)'
             ),
             'ocupacao',
           ],
+          'capacidade',
         ],
         where: {
           id: {

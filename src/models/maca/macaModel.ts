@@ -6,14 +6,14 @@ import { sequelize } from '../db';
 const macaSchema = z.object({
   id: z.number().min(1),
   baldeId: z.number().min(1).optional(),
-  nome: z.string().min(1),
+  nome: z.string().min(1).optional(),
   preco: z.number().nonnegative().multipleOf(0.01),
   expiracao: z.date(),
 });
 
 const createMacaDtoSchema = z.object({
   baldeId: z.number().min(1).optional(),
-  nome: z.string().min(1),
+  nome: z.string().min(1).optional(),
   preco: z.number().nonnegative().multipleOf(0.01),
   expiracao: z.string().regex(/^\d+s$/),
   expiracaoDate: z.date().optional(),
