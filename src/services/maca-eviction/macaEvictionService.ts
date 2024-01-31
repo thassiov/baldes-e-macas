@@ -1,5 +1,6 @@
-import { setTimeout } from 'timers/promises';
+import { setInterval } from 'timers';
 
+import { configs } from '../../utils/configs';
 import { ServiceError } from '../../utils/errors';
 import { logger } from '../../utils/logger';
 import { MacaService } from '../maca/macaService';
@@ -11,6 +12,7 @@ type MacaWatched = {
 
 class MacaEvictionService {
   watched: MacaWatched[];
+  timer: NodeJS.Timeout | undefined;
 
   constructor(private readonly macaService: MacaService) {
     this.watched = [];
@@ -21,23 +23,27 @@ class MacaEvictionService {
    * A lista de monitoramento e varrida a cada 1 segundos para encontrar macas vencidas e as
    * remover
    */
-  async monitorarDataDeExpiracaoDeMaca(): Promise<void> {
+  async monitorarDataDeValidadeDeMaca(): Promise<void> {
     try {
       const macas = await this.getMacas();
       macas.forEach((maca: MacaWatched) => {
-        this.adicionarMacaAlistadeMonitoramentoDeExpiracao(maca);
+        this.adicionarMacaAListadeMonitoramentoDeValidade(maca);
       });
 
       logger.info('Lista de monitoramento criada. Iniciando monitoramento...');
-      while (true) {
+
+      const timer = setInterval(async () => {
         const vencidas = this.verificarMacasElegiveisARemocao();
+
         const paraRemocao = vencidas.map(async (vencida) =>
           this.deleteMaca(vencida)
         );
         await Promise.all(paraRemocao);
-        await setTimeout(1000);
-      }
+      }, configs.MACA_EVICTION_INTERVAL_CHECK);
+
+      this.setTimer(timer);
     } catch (error) {
+      this.clearTimer();
       throw new ServiceError('Erro ao monitorar data de expiracao de macas', {
         cause: error as Error,
       });
@@ -45,7 +51,7 @@ class MacaEvictionService {
   }
 
   // eu sei que é um nome 'java'. desculpa.
-  adicionarMacaAlistadeMonitoramentoDeExpiracao(maca: MacaWatched): void {
+  adicionarMacaAListadeMonitoramentoDeValidade(maca: MacaWatched): void {
     const index = this.watched.findIndex(
       (macaWatched: MacaWatched) => macaWatched.id === maca.id
     );
@@ -56,7 +62,7 @@ class MacaEvictionService {
     }
   }
 
-  removerMacaAlistadeMonitoramentoDeExpiracao(macaId: number): void {
+  removerMacaDaListadeMonitoramentoDeValidade(macaId: number): void {
     const index = this.watched.findIndex(
       (macaWatched: MacaWatched) => macaWatched.id === macaId
     );
@@ -72,7 +78,7 @@ class MacaEvictionService {
     logger.info('Maca removida da lista de monitoramento');
   }
 
-  verificarMacasElegiveisARemocao(): number[] {
+  private verificarMacasElegiveisARemocao(): number[] {
     const now = new Date();
     now.setMilliseconds(0);
 
@@ -81,7 +87,8 @@ class MacaEvictionService {
         .map((maca: MacaWatched) => {
           const expiracao = maca.expiracao;
           expiracao.setMilliseconds(0);
-          if (now.getTime() <= expiracao.getTime()) {
+
+          if (now.getTime() >= expiracao.getTime()) {
             // vencida
             return maca.id;
           }
@@ -102,18 +109,8 @@ class MacaEvictionService {
         return;
       }
 
-      const index = this.watched.findIndex(
-        (macaWatched: MacaWatched) => macaWatched.id === macaId
-      );
+      this.removerMacaDaListadeMonitoramentoDeValidade(macaId);
 
-      if (index === -1) {
-        logger.warn(
-          `Maca ${macaId} nao encontrada no registro de expiracao de macas`
-        );
-        return;
-      }
-
-      this.watched.splice(index, 1);
       logger.info(`Maca ${macaId} expirou e foi removida`);
     } catch (error) {
       throw new ServiceError('Erro ao remover maca expirada', {
@@ -133,6 +130,19 @@ class MacaEvictionService {
         cause: error as Error,
       });
     }
+  }
+
+  setTimer(timer: NodeJS.Timeout): void {
+    this.timer = timer;
+  }
+
+  clearTimer(): void {
+    clearTimeout(this.timer);
+  }
+
+  // usado para testes unitarios somente.
+  getWatched(): MacaWatched[] {
+    return this.watched;
   }
 }
 

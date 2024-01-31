@@ -18,8 +18,8 @@ describe('REST: maca createMacaHandler', () => {
   };
 
   const mockMonitoramentoService = {
-    adicionarMacaAlistadeMonitoramentoDeExpiracao: jest.fn(),
-    removerMacaAlistadeMonitoramentoDeExpiracao: jest.fn(),
+    adicionarMacaAListadeMonitoramentoDeValidade: jest.fn(),
+    removerMacaDaListadeMonitoramentoDeValidade: jest.fn(),
   };
 
   it('cria uma nova maca', async () => {

@@ -3,12 +3,16 @@ import { StatusCodes } from 'http-status-codes';
 import { z } from 'zod';
 
 import { MacaService } from '../../services/maca';
+import { MacaEvictionService } from '../../services/maca-eviction';
 import { EndpointHandlerError } from '../../utils/errors';
 import { EndpointHandler } from '../../utils/types';
 
 const idSchema = z.number();
 
-function removeMacaHandlerFactory(macaService: MacaService): EndpointHandler {
+function removeMacaHandlerFactory(
+  macaService: MacaService,
+  monitoramento: MacaEvictionService
+): EndpointHandler {
   return async function removeMacaHandler(
     req: Request,
     res: Response
@@ -36,6 +40,8 @@ function removeMacaHandlerFactory(macaService: MacaService): EndpointHandler {
         });
         return;
       }
+
+      monitoramento.removerMacaDaListadeMonitoramentoDeValidade(macaId);
 
       res.status(StatusCodes.NO_CONTENT).send();
       return;

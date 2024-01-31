@@ -2,6 +2,7 @@ import { getMockReq, getMockRes } from '@jest-mock/express';
 import { StatusCodes } from 'http-status-codes';
 
 import { MacaService } from '../../services/maca';
+import { MacaEvictionService } from '../../services/maca-eviction';
 import { removeMacaHandlerFactory } from './removeMaca';
 
 describe('REST: maca removeMacaHandler', () => {
@@ -15,6 +16,11 @@ describe('REST: maca removeMacaHandler', () => {
     remove: jest.fn(),
   };
 
+  const mockMonitoramentoService = {
+    adicionarMacaAListadeMonitoramentoDeValidade: jest.fn(),
+    removerMacaDaListadeMonitoramentoDeValidade: jest.fn(),
+  };
+
   it('remove uma maca existente', async () => {
     (mockMacaService.remove as jest.Mock).mockResolvedValueOnce({ removed: 1 });
 
@@ -23,7 +29,8 @@ describe('REST: maca removeMacaHandler', () => {
     });
     const mockRes = getMockRes().res;
     const removeMacaHandler = removeMacaHandlerFactory(
-      mockMacaService as any as MacaService
+      mockMacaService as any as MacaService,
+      mockMonitoramentoService as any as MacaEvictionService
     );
 
     await removeMacaHandler(mockReq, mockRes);
@@ -42,7 +49,8 @@ describe('REST: maca removeMacaHandler', () => {
     });
     const mockRes = getMockRes().res;
     const removeMacaHandler = removeMacaHandlerFactory(
-      mockMacaService as any as MacaService
+      mockMacaService as any as MacaService,
+      mockMonitoramentoService as any as MacaEvictionService
     );
 
     await removeMacaHandler(mockReq, mockRes);

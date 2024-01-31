@@ -24,7 +24,7 @@ function createMacaHandlerFactory(
       }
 
       const { id, expiracao } = await macaService.create(req.body);
-      monitoramento.adicionarMacaAlistadeMonitoramentoDeExpiracao({
+      monitoramento.adicionarMacaAListadeMonitoramentoDeValidade({
         id,
         expiracao,
       });

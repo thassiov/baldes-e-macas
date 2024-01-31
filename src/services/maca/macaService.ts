@@ -30,9 +30,7 @@ class MacaService {
 
       const id = await this.repo.create(maca);
 
-      const returnObject = { id, expiracao: maca.expiracaoDate };
-
-      return returnObject;
+      return { id, expiracao: maca.expiracaoDate };
     } catch (error) {
       throw new ServiceError('Erro ao criar nova maca', {
         cause: error as Error,
