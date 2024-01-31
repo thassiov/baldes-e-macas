@@ -72,7 +72,7 @@ class BaldeRepository {
         attributes: [
           [
             this.sequelize.literal(
-              '(SELECT COUNT(*) FROM macas WHERE balde.id = macas.baldeId)'
+              '(SELECT COUNT(*) FROM macas WHERE balde.id = macas.baldeId AND macas.deletedAt IS NULL)'
             ),
             'ocupacao',
           ],
@@ -113,13 +113,13 @@ class BaldeRepository {
         attributes: [
           [
             this.sequelize.literal(
-              '(SELECT SUM(preco) FROM macas WHERE balde.id = macas.baldeId)'
+              '(SELECT SUM(preco) FROM macas WHERE balde.id = macas.baldeId AND deletedAt IS NULL)'
             ),
             'valorTotal',
           ],
           [
             this.sequelize.literal(
-              '(SELECT COUNT(*) FROM macas WHERE balde.id = macas.baldeId)'
+              '(SELECT COUNT(*) FROM macas WHERE balde.id = macas.baldeId AND deletedAt IS NULL)'
             ),
             'ocupacao',
           ],
@@ -137,21 +137,25 @@ class BaldeRepository {
         return [];
       }
 
-      const result = baldes.map((balde) => {
-        const ocupacao = Math.round(
-          ((balde.get('ocupacao') as number) /
-            (balde.get('capacidade') as number)) *
-            100
-        );
+      const result = baldes
+        .map((balde) => {
+          const ocupacao = Math.round(
+            ((balde.get('ocupacao') as number) /
+              (balde.get('capacidade') as number)) *
+              100
+          );
 
-        return {
-          ocupacao,
-          id: balde.get('id') as number,
-          nome: balde.get('nome') as string,
-          capacidade: balde.get('capacidade') as number,
-          valorTotal: balde.get('valorTotal') as number,
-        };
-      });
+          return {
+            ocupacao,
+            id: balde.get('id') as number,
+            nome: balde.get('nome') as string,
+            capacidade: balde.get('capacidade') as number,
+            valorTotal: balde.get('valorTotal') as number,
+          };
+        })
+        .sort((baldeA, baldeB) => {
+          return baldeB.ocupacao - baldeA.ocupacao;
+        });
 
       return result;
     } catch (error) {

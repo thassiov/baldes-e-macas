@@ -29,7 +29,7 @@ function setRouter(services: Services): express.Router {
     createMacaHandlerFactory(services.maca, services.monitoramento)
   );
   router.delete(
-    '/macas:id',
+    '/macas/:id',
     removeMacaHandlerFactory(services.maca, services.monitoramento)
   );
 
