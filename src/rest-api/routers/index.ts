@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { Services } from '../../utils/types';
+import { errorHandler } from '../middlewares/errorHandler';
 import { createBaldeHandlerFactory } from './createBalde';
 import { createMacaHandlerFactory } from './createMaca';
 import { listBaldesHandlerFactory } from './listBaldes';
@@ -27,6 +28,8 @@ function setRouter(services: Services): express.Router {
   );
   router.post('/maca', createMacaHandlerFactory(services.maca));
   router.delete('/maca:id', removeMacaHandlerFactory(services.maca));
+
+  router.use(errorHandler);
 
   return router;
 }

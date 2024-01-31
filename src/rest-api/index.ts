@@ -17,7 +17,9 @@ function startApi(services: Services) {
   api.use(router);
 
   api.listen(configs.API_PORT, () =>
-    logger.info(`Server started at http://0.0.0.0:${configs.API_PORT}`)
+    logger.info(
+      `Servidor initiaco no endereco http://0.0.0.0:${configs.API_PORT}`
+    )
   );
 }
 
