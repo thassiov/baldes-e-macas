@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "c0fd428f-70b5-472a-a441-2d35d31bb418",
+		"name": "Gerenciamento de baldes e macas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "147807"
+	},
+	"item": [
+		{
+			"name": "Cria uma nova maca",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Cria um novo balde",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nome\": \"balde A\",\n    \"capacidade\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/baldes",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"baldes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adiciona uma maca ao balde",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/baldes/1/adicionar/4",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"baldes",
+						"1",
+						"adicionar",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove uma maca do balde",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/baldes/1/adicionar/4",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"baldes",
+						"1",
+						"adicionar",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista os baldes e suas informacoes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove uma maca",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/macas/5",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"macas",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove um balde",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/api/v1/macas/5",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"macas",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
