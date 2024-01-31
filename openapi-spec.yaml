@@ -1,0 +1,332 @@
+openapi: "3.0.3"
+info:
+  title: Desafio Planne 
+  version: "1.0"
+  description: API RESTful de gerenciamento de Baldes e Macas
+
+servers:
+  - url: http://0.0.0.0:8080/api/v1
+
+components:
+  schemas:
+    Erro:
+      type: object
+      properties:
+        message:
+          type: string
+    CriaMacaDto:
+      type: object
+      properties:
+        nome:
+          type: string
+          required: false
+          description: Nome da maca
+        preco:
+          type: number
+          format: float
+          required: true
+          minimum: 0.00
+          multipleOf: 0.01
+          description: O preco da maca
+        expiracao:
+          type: string
+          pattern: /^\d+s$/
+          required: true
+          description: O tempo, em segundos, para que a maca saia da validade e seja removida do banco. Consiste de um numero inteiro seguido por um 's'
+    CriaBaldeDto:
+      type: object
+      properties:
+        nome:
+          type: string
+          required: false
+          description: Nome do balde
+        capacidade:
+          type: number
+          required: true
+          minimum: 0
+          description: A capacidade do balde. Quantas macas podem ser adicionadas a ele.
+    RespostaMacaCriada:
+      type: object
+      properties:
+        id:
+          type: number
+          description: O id da maca criada
+    RespostaMacaRemovida:
+      type: object
+      properties:
+        properties: {}
+    RespostaBaldeCriado:
+      type: object
+      properties:
+        id:
+          type: number
+          description: O id d0 balde criado
+    RespostaBaldeRemovido:
+      type: object
+      properties:
+        properties: {}
+    RespostaAdicionaMacaAoBalde:
+      type: object
+      properties:
+        id:
+          type: boolean
+    RespostaRemoveMacaDoBalde:
+      type: object
+      properties:
+        id:
+          type: boolean
+    RespostaListaBaldes:
+      type: object
+      properties:
+        baldes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListaBaldesItem'
+    ListaBaldesItem:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Id numerico do balde
+        nome:
+          type: string
+          description: Nome do balde (se existir)
+        capacidade:
+          type: number
+          description: A capacidade do balde. Quantas macas podem ser adicionadas a ele.
+        ocupacao:
+          type: number
+          description: Porcentagem referente a ocupacao atual do balde
+        valorToral:
+          type: number
+          format: float
+          multipleOf: 0.01
+          description: Somatoria dos valores de cada maca adicionada ao balde
+
+paths:
+  /macas:
+    post:
+      summary: Cria uma nova maca
+      requestBody:
+        description: Payload para a criacao de uma nova maca
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriaMacaDto'
+      responses:
+        '201':
+          description: Maca criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaMacaCriada'
+        '400':
+          description: Falha ao criar a maca
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /macas/{macaId}:
+    delete:
+      summary: Remove uma maca existente
+      parameters:
+        - name: macaId
+          in: path
+          description: Id da maca a ser removida
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Maca removida com sucesso
+          content:
+            application/json: {}
+        '400':
+          description: O formato do id da maca e invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: A maca nao existe, por isso nao pode ser removida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /baldes:
+    post:
+      summary: Cria um novo balde
+      requestBody:
+        description: Payload para a criacao de um novo balde
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriaBaldeDto'
+      responses:
+        '201':
+          description: Balde criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaBaldeCriado'
+        '400':
+          description: Falha ao criar o balde
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+    get:
+      summary: Lista baldes com informacoes sobre porcentagem de ocupacao e valor total do conteudo
+      responses:
+        '200':
+          description: Lista de baldes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaListaBaldes'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /baldes/{baldeId}:
+    delete:
+      summary: Remove um balde existente
+      parameters:
+        - name: baldeId
+          in: path
+          description: Id do balde a ser removido
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Balde removido com sucesso
+          content:
+            application/json: {}
+        '400':
+          description: O formato do id do balde e invalido ou o balde nao esta vazio, por isso nao pode ser removido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: O balde nao existe, por isso nao pode ser removido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /baldes/{baldeId}/adicionar/{macaId}:
+    patch:
+      summary: Move uma maca para dentro de um balde
+      parameters:
+        - name: baldeId
+          in: path
+          description: Id do balde
+          required: true
+          schema:
+            type: integer
+        - name: macaId
+          in: path
+          description: Id da maca a ser movida
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A maca foi movida para dentro do balde com sucesso 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaAdicionaMacaAoBalde'
+        '400':
+          description: O formato do baldeId ou macaId e invalido ou o balde ja esta cheio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: O balde ou a maca nao existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /baldes/{baldeId}/remover/{macaId}:
+    patch:
+      summary: Remove uma maca de dentro de um balde
+      parameters:
+        - name: baldeId
+          in: path
+          description: Id do balde
+          required: true
+          schema:
+            type: integer
+        - name: macaId
+          in: path
+          description: Id da maca a ser removida
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A maca foi removida do balde com sucesso 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RespostaRemoveMacaDoBalde'
+        '400':
+          description: O formato do baldeId ou macaId e invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: O balde ou a maca nao existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
