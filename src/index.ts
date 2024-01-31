@@ -27,7 +27,7 @@ const macaEvictionService = new MacaEvictionService(macaService);
     };
 
     logger.info('Inicializando servico de monitoramento de macas vencidas');
-    await macaEvictionService.monitorarDataDeExpiracaoDeMaca();
+    await macaEvictionService.monitorarDataDeValidadeDeMaca();
 
     logger.info('Inicializando api rest');
     startApi(services);
